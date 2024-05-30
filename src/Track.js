@@ -6,10 +6,6 @@ export default function Track() {
     return (
         <main className="p-10 md:ml-64 h-auto pt-20">
             <div className="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4">
-
-                <h1>Drone Map Drone MapDrone MapDrone MapDrone MapDrone MapDrone MapDrone MapDrone MapMapDrone Map</h1>
-
-
                 <MapContainer center={[51.505, -0.09]} zoom={13} style={{height: "100%", width: "100%"}}
                               scrollWheelZoom={false}>
                     <TileLayer
@@ -28,6 +24,5 @@ export default function Track() {
 
         </main>
 
-    )
-        ;
+    );
 }
