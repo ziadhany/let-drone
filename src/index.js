@@ -11,17 +11,22 @@ import Orders from "./Orders";
 import Prescription from "./Prescription";
 import Login from "./Login";
 import SignUp from "./SignUp";
+import Logout from "./Logout";
+import EditPrescription from "./EditPrescription";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
         errorElement: <ErrorPage />,
-
         children: [
             {
                 path: "/login",
                 element: <Login />,
+            },
+            {
+                path: "/Logout",
+                element: <Logout />,
             },
             {
                 path: "/signup",
@@ -36,6 +41,10 @@ const router = createBrowserRouter([
                 element: <Prescription />,
             },
             {
+                path: "/edit-prescription",
+                element: <EditPrescription />,
+            },
+            {
                 path: "/orders",
                 element: <Orders />,
             },
@@ -43,7 +52,6 @@ const router = createBrowserRouter([
                 path: "/track",
                 element: <Track />,
             },
-
         ],
     },
 ]);

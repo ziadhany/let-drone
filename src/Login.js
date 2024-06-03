@@ -3,7 +3,7 @@ import React from 'react';
 export default function Login() {
     return (
         <>
-            <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+            <div className="max-w-xl mx-auto bg-white py-8 px-8 mt-12 shadow sm:rounded-lg sm:px-10 justify-center lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <img className="mx-auto h-10 w-auto"
                          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company"/>
@@ -48,8 +48,7 @@ export default function Login() {
 
                     <p className="mt-10 text-center text-sm text-gray-500">
                         Not a member?
-                        <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Start a 14
-                            day free trial</a>
+                        <a href="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500 ml-2">Sign Up</a>
                     </p>
                 </div>
             </div>
