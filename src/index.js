@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import ErrorPage from "./ErrorPage";
-import Profile from "./Profile";
+import Dashboard from "./Dashboard";
 import Track from "./Track";
 import Orders from "./Orders";
 import UploadPrescription from "./UploadPrescription";
@@ -13,6 +13,11 @@ import Login from "./Login";
 import SignUp from "./SignUp";
 import Logout from "./Logout";
 import EditPrescription from "./EditPrescription";
+import ForgotPassword from "./ForgotPassword";
+import PrivateRoute from "./PrivateRoute";
+import AuthProvider from "./AuthProvider";
+
+
 
 const router = createBrowserRouter([
     {
@@ -25,6 +30,10 @@ const router = createBrowserRouter([
                 element: <Login />,
             },
             {
+                path: "/forget-password",
+                element: <ForgotPassword />,
+            },
+            {
                 path: "/Logout",
                 element: <Logout />,
             },
@@ -33,8 +42,8 @@ const router = createBrowserRouter([
                 element: <SignUp />,
             },
             {
-                path: "/profile",
-                element: <Profile />,
+                path: "/Dashboard",
+                element: <PrivateRoute> <Dashboard/> </PrivateRoute>,
             },
             {
                 path: "/upload-prescription",
@@ -58,7 +67,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
     </React.StrictMode>
 );
 

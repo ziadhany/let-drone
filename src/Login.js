@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import {AuthContext} from "./AuthContext";
+
+
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -13,9 +19,10 @@ const Login = () => {
                 username: username,
                 password: password,
             });
-            localStorage.setItem('access_token', response.data.access_token);
-            localStorage.setItem('refresh_token', response.data.refresh_token);
+            const accessToken = response.data.access_token;
+            login(accessToken);
             console.log('Login successful');
+            navigate('/dashboard'); // Redirect to the desired component
         } catch (error) {
             console.error('Login failed', error);
         }
@@ -49,7 +56,7 @@ const Login = () => {
                                 <label htmlFor="password"
                                        className="block text-sm font-medium leading-6 text-gray-900">Password</label>
                                 <div className="text-sm">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Forgot
+                                    <a href="/forget-password" className="font-semibold text-indigo-600 hover:text-indigo-500">Forgot
                                         password?</a>
                                 </div>
                             </div>

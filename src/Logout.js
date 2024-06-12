@@ -1,11 +1,19 @@
-import React from 'react';
+import { useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {AuthContext} from "./AuthContext";
 
-export default function Logout() {
-    localStorage.removeItem("access_token")
-    localStorage.removeItem("refresh_token")
-    return (
-        <>
-           <h1>Logout</h1>
-        </>
-    );
-}
+
+
+const Logout = () => {
+    const navigate = useNavigate();
+    const { logout } = useContext(AuthContext);
+
+    useEffect(() => {
+        logout();
+        navigate('/login');
+    }, [logout, navigate]);
+
+    return null; // This component doesn't render anything
+};
+
+export default Logout;
