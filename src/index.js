@@ -47,19 +47,19 @@ const router = createBrowserRouter([
             },
             {
                 path: "/upload-prescription",
-                element: <UploadPrescription />,
+                element: <PrivateRoute><UploadPrescription /></PrivateRoute>,
             },
             {
                 path: "/edit-prescription",
-                element: <EditPrescription />,
+                element: <PrivateRoute><EditPrescription /></PrivateRoute>,
             },
             {
                 path: "/orders",
-                element: <Orders />,
+                element: <PrivateRoute><Orders /></PrivateRoute>,
             },
             {
                 path: "/track",
-                element: <Track />,
+                element: <PrivateRoute><Track /></PrivateRoute>,
             },
         ],
     },
