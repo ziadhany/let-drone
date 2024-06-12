@@ -1,19 +1,39 @@
-import React from 'react';
+import React, {Component, useState} from 'react';
+import {ethers} from "ethers";
 
-export default function Orders() {
+
+const Orders = () => {
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [defaultAccount, setDefaultAccount] = useState(null);
+
+    const connectWalletHandler = async () => {
+        if (window.ethereum && window.ethereum.isMetaMask) {
+            try {
+                const provider = new ethers.BrowserProvider(window.ethereum)
+                const accounts = await provider.send("eth_requestAccounts", []);
+                const signer = await provider.getSigner()
+                const address = await signer.getAddress()
+                setDefaultAccount(address)
+
+            } catch (error) {
+                setErrorMessage(error.message);
+            }
+        } else {
+            console.log('Need to install MetaMask');
+            setErrorMessage('Please install MetaMask browser extension to interact');
+        }
+    }
+
     return (
         <>
             <div id="order-page">
                 <div
                     className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700 mt-14">
-                    <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
-                        Connect wallet
-                    </h5>
                     <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Connect with one of our
                         available wallet providers or create a new one.</p>
                     <ul className="my-4 space-y-3">
                         <li>
-                            <a href="#"
+                            <button href="#" onClick={() => connectWalletHandler()}
                                className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
                                 <svg aria-hidden="true" className="h-4" viewBox="0 0 40 38" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
@@ -97,7 +117,13 @@ export default function Orders() {
                                 <span className="flex-1 ms-3 whitespace-nowrap">MetaMask</span>
                                 <span
                                     className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">Popular</span>
-                            </a>
+                            </button>
+                            <div className="mt-5">
+                                <div className='accountDisplay'>
+                                    <h3>Address: {defaultAccount}</h3>
+                                </div>
+                                {errorMessage}
+                            </div>
                         </li>
 
                     </ul>
@@ -232,3 +258,5 @@ export default function Orders() {
         </>
     );
 }
+
+export default Orders;

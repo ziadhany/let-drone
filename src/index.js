@@ -8,7 +8,7 @@ import ErrorPage from "./ErrorPage";
 import Profile from "./Profile";
 import Track from "./Track";
 import Orders from "./Orders";
-import Prescription from "./Prescription";
+import UploadPrescription from "./UploadPrescription";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import Logout from "./Logout";
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/upload-prescription",
-                element: <Prescription />,
+                element: <UploadPrescription />,
             },
             {
                 path: "/edit-prescription",
