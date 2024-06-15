@@ -3,11 +3,12 @@ import "./index.css";
 import React from "react";
 import logo from "./logo.svg";
 import avatar from "./assets/img/avatars/avatar7.png";
-import {Outlet} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 
 
 
 function App() {
+  const navigate = useNavigate();
   return (
       <>
         <nav
@@ -37,8 +38,9 @@ function App() {
                   <div>
                     <button type="button"
                             className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                            aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                      <span className="sr-only">Open user menu</span>
+                            aria-expanded="false" data-dropdown-toggle="dropdown-user"
+                            onClick={() => navigate('/profile')}
+                    >
                       <img className="w-8 h-8 rounded-full"
                            src={avatar}
                            alt="user photo"/>

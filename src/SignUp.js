@@ -13,6 +13,18 @@ export default function SignUp() {
                     </div>
                     <form className="flex-col space-y-4">
                         <div className="flex flex-col space-y-2">
+                            <label className="block font-medium text-gray-700">First Name</label><input
+                            type="text"
+                            className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
+                            name="displayName" required="" placeholder="First Name"/>
+                        </div>
+                        <div className="flex flex-col space-y-2">
+                            <label className="block font-medium text-gray-700">Last Name</label><input
+                            type="text"
+                            className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
+                            name="displayName" required="" placeholder="Last Name"/>
+                        </div>
+                        <div className="flex flex-col space-y-2">
                             <label className="block font-medium text-gray-700">E-Mail Adress</label><input type="email"
                                                                                                            className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
                                                                                                            name="email"
@@ -26,12 +38,7 @@ export default function SignUp() {
                             className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
                             name="password" minLength="6" placeholder="Password" required=""/>
                         </div>
-                        <div className="flex flex-col space-y-2">
-                            <label className="block font-medium text-gray-700">First and Last Name</label><input
-                            type="text"
-                            className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
-                            name="displayName" required="" placeholder="First and Last Name"/>
-                        </div>
+
                         <div className="flex flex-col space-y-2">
                             <label className="block font-medium text-gray-600 font-normal flex items-start space-x-2">
                                 <div><input type="checkbox"

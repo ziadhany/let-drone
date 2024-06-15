@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapContainer } from 'react-leaflet/MapContainer'
 import { TileLayer } from 'react-leaflet/TileLayer'
-import {Circle, Marker, Popup} from "react-leaflet";
+import {Circle} from "react-leaflet";
 import LeafletRoutingMachine from "./LeafletRoutingMachine";
 
 

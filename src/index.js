@@ -16,6 +16,7 @@ import EditPrescription from "./EditPrescription";
 import ForgotPassword from "./ForgotPassword";
 import PrivateRoute from "./PrivateRoute";
 import AuthProvider from "./AuthProvider";
+import Profile from "./Profile";
 
 
 
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: "/Dashboard",
                 element: <PrivateRoute> <Dashboard/> </PrivateRoute>,
+            },
+            {
+                path: "/profile",
+                element: <PrivateRoute> <Profile/> </PrivateRoute>,
             },
             {
                 path: "/upload-prescription",
