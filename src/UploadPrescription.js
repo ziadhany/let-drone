@@ -7,7 +7,8 @@ class UploadPrescription extends Component {
         this.state = {
             selectedFile: null,
             uploadStatus: "",
-            location: "",
+            deliveryOptions: "PICKUP",
+            location: { latitude: "", longitude: "", altitude: "" },
             error:""
         };
     }
@@ -24,17 +25,20 @@ class UploadPrescription extends Component {
     };
 
     handleUpload = async () => {
+        const token = localStorage.getItem('access_token');
         const { selectedFile } = this.state;
         if (!selectedFile) return;
 
         const formData = new FormData();
         formData.append('image', selectedFile);
+        formData.append('delivery_option', this.state.deliveryOptions);
+        formData.append('delivery_address', JSON.stringify(this.state.location));
 
         try {
             const response = await fetch('http://127.0.0.1:8000/api/v0/patients_prescriptions/', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer 6fhV1ZDZ27B2jmcZMiLHN2lfAYLcby`
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: formData
             });
@@ -55,6 +59,7 @@ class UploadPrescription extends Component {
 
 
     fetchLocation = (e) => {
+        this.setState({ delivery_option: e.target.value });
         if (e.target.value === 'DRONE') {
             // if geolocation is supported by the users browser
             if (navigator.geolocation) {
@@ -62,9 +67,9 @@ class UploadPrescription extends Component {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         // save the geolocation coordinates in two variables
-                        const {latitude, longitude} = position.coords;
+                        const {latitude, longitude, altitude} = position.coords;
                         // update the value of user location variable
-                        this.state.location=  {latitude, longitude};
+                        this.state.location=  {latitude, longitude, altitude};
                         console.log(this.state.location)
                     },
                     // if there was an error getting the users location
@@ -113,7 +118,6 @@ class UploadPrescription extends Component {
                         <select id="countries"
                                 onChange={this.fetchLocation}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option selected>Delivery options</option>
                             <option value="PICKUP">Pickup</option>
                             <option value="DRONE">Drone Delivery</option>
                         </select>

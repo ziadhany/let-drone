@@ -4,7 +4,7 @@ import L from "leaflet";
 import "leaflet-routing-machine"
 import routingControl from "leaflet-routing-machine";
 
-function LeafletRoutingMachine() {
+function LeafletRoutingMachine({destination_point_latitude,destination_point_longitude, drone_point_latitude,drone_point_longitude}) {
     const map = useMap();
     useEffect(() => {
         const icon1 = L.icon({
@@ -23,8 +23,8 @@ function LeafletRoutingMachine() {
 
         L.Routing.control({
             waypoints: [
-                L.latLng(57.74, 11.94),
-                L.latLng(57.6792, 11.949)
+                L.latLng(drone_point_latitude, drone_point_longitude),
+                L.latLng(destination_point_latitude, destination_point_longitude),
             ],
             draggable: true,
             addWaypoints: false, // Disable adding new waypoints

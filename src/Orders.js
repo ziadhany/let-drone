@@ -1,10 +1,13 @@
-import React, {Component, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ethers} from "ethers";
 
 
 const Orders = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [defaultAccount, setDefaultAccount] = useState(null);
+    const [Prescriptions, setPrescriptions] = useState([]);
+    const [Delivery, setDelivery] = useState([]);
+    const token = localStorage.getItem('access_token');
 
     const connectWalletHandler = async () => {
         if (window.ethereum && window.ethereum.isMetaMask) {
@@ -24,9 +27,58 @@ const Orders = () => {
         }
     }
 
+    useEffect(() => {
+        const fetchPrescriptions = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/v0/patients_prescriptions/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setPrescriptions(data);
+                    console.log(data);
+                } else {
+                    console.error("Failed to fetch prescriptions.");
+                }
+            } catch (error) {
+                console.error("Error fetching prescriptions:", error);
+            }
+        };
+
+        fetchPrescriptions();
+
+        const fetchTrackOrder = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/v0/delivery/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setDelivery(data);
+                    console.log(data);
+                } else {
+                    console.error("Failed to fetch delivery orders.");
+                }
+            } catch (error) {
+                console.error("Error fetching delivery orders.", error);
+            }
+        };
+
+        fetchTrackOrder();
+    }, []);
+
     return (
         <>
             <div id="order-page">
+
                 <div
                     className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700 mt-14">
                     <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Connect with one of our
@@ -34,7 +86,7 @@ const Orders = () => {
                     <ul className="my-4 space-y-3">
                         <li>
                             <button href="#" onClick={() => connectWalletHandler()}
-                               className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                                    className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
                                 <svg aria-hidden="true" className="h-4" viewBox="0 0 40 38" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
                                     <path d="M39.0728 0L21.9092 12.6999L25.1009 5.21543L39.0728 0Z" fill="#E17726"/>
@@ -140,7 +192,9 @@ const Orders = () => {
                     </div>
                 </div>
 
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-14 mb-3">
+                <h2 className="text-3xl font-extrabold dark:text-white mt-5">Prescriptions List</h2>
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-10 mb-3">
+
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead
                             className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -152,109 +206,149 @@ const Orders = () => {
                                 Approved
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Pay Now
-                            </th>
-                            <th scope="col" className="px-6 py-3">
                                 Price
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Action
+                                delivery_option
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                created_at
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                updated_at
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Pay Now
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <th scope="row"
-                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <a href="#"
-                                   className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Track</a>
-                            </th>
-                            <td className="px-6 py-4">
-                                ❌
-                            </td>
-                            <td className="px-6 py-4">
-                                <button type="button" disabled={true}
-                                        className="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 me-2 mb-2">
-                                    <svg className="w-4 h-4 me-2 -ms-1 text-[#626890]" aria-hidden="true"
-                                         focusable="false" data-prefix="fab" data-icon="ethereum" role="img"
-                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                                        <path fill="currentColor"
-                                              d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
-                                    </svg>
-                                    Pay with Ethereum
-                                </button>
-                            </td>
-                            <td className="px-6 py-4">
-                                $2999
-                            </td>
-                            <td className="px-6 py-4">
-                                <a href="#"
-                                   className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            </td>
-                        </tr>
-                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <th scope="row"
-                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <a href="#"
-                                   className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Track</a>
-                            </th>
-                            <td className="px-6 py-4">
-                                ⏳
-                            </td>
-                            <td className="px-6 py-4">
-                                <button type="button" disabled={true}
-                                        className="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 me-2 mb-2">
-                                    <svg className="w-4 h-4 me-2 -ms-1 text-[#626890]" aria-hidden="true"
-                                         focusable="false" data-prefix="fab" data-icon="ethereum" role="img"
-                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                                        <path fill="currentColor"
-                                              d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
-                                    </svg>
-                                    Pay with Ethereum
-                                </button>
-                            </td>
-                            <td className="px-6 py-4">
-                                $1999
-                            </td>
-                            <td className="px-6 py-4">
-                                <a href="#"
-                                   className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            </td>
-                        </tr>
-                        <tr className="bg-white dark:bg-gray-800">
-                            <th scope="row"
-                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <a href="#"
-                                   className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Track</a>
-                            </th>
-                            <td className="px-6 py-4">
-                                ✅
-                            </td>
-                            <td className="px-6 py-4">
-                                <button type="button" disabled={true}
-                                        className="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 me-2 mb-2">
-                                    <svg className="w-4 h-4 me-2 -ms-1 text-[#626890]" aria-hidden="true"
-                                         focusable="false" data-prefix="fab" data-icon="ethereum" role="img"
-                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                                        <path fill="currentColor"
-                                              d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
-                                    </svg>
-                                    Pay with Ethereum
-                                </button>
-                            </td>
-                            <td className="px-6 py-4">
-                                $99
-                            </td>
-                            <td className="px-6 py-4">
-                                <a href="#"
-                                   className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Track</a>
-                            </td>
-                        </tr>
+                        {Prescriptions.map((prescription, i) =>
+                            <tr className="bg-white dark:bg-gray-800" key={i}>
+                                <th scope="row"
+                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <a href={prescription.image}
+                                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline">📋
+                                        Prescription image</a>
+                                </th>
+                                <td className="px-6 py-4">
+                                    {prescription.approved ? "✅" : "⏳"}
+                                </td>
+                                <td className="px-6 py-4">
+                                    $ {prescription.price ? prescription.price : "⏳💰"}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {prescription.delivery_option}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {prescription.updated_at}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {prescription.created_at}
+                                </td>
+                                <td className="px-6 py-4">
+                                    <button type="button" disabled={true}
+                                            className="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 me-2 mb-2">
+                                        <svg className="w-4 h-4 me-2 -ms-1 text-[#626890]" aria-hidden="true"
+                                             focusable="false" data-prefix="fab" data-icon="ethereum" role="img"
+                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                                            <path fill="currentColor"
+                                                  d="M311.9 260.8L160 353.6 8 260.8 160 0l151.9 260.8zM160 383.4L8 290.6 160 512l152-221.4-152 92.8z"></path>
+                                        </svg>
+                                        Pay with Ethereum
+                                    </button>
+                                </td>
+                            </tr>
+                        )}
+
                         </tbody>
                     </table>
                 </div>
 
             </div>
+
+
+            <div id="order-page">
+                <h2 className="text-3xl font-extrabold dark:text-white mt-5">
+                    Delivery Queue List
+                </h2>
+
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-10 mb-3">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead
+                            className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" className="px-6 py-3">
+                                Drone
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Status
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                estimated_delivery_time
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                pickup_time
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                created_at
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                updated_at
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Track
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {Delivery.map((delivery, i) =>
+                            <tr className="bg-white dark:bg-gray-800" key={i}>
+                                <th scope="row"
+                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <a href={"/drones/"+ delivery.drone.id}
+                                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <img src={"https://cdn-icons-png.flaticon.com/512/3180/3180151.png"} className="max-w-7"/>
+                                        </a>
+                                </th>
+                                <td className="px-6 py-4">
+                                    { delivery.status }
+                                </td>
+                                <td className="px-6 py-4">
+                                    {delivery.estimated_delivery_time}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {delivery.pickup_time}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {delivery.updated_at}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {delivery.created_at}
+                                </td>
+                                <td className="px-6 py-4">
+
+                                    <a href={'track-orders/' + delivery.id}
+                                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2"
+                                                  d="M17.8 14h0a7 7 0 1 0-11.5 0h0l.1.3.3.3L12 21l5.1-6.2.6-.7.1-.2Z"/>
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        )}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
         </>
     );
 }

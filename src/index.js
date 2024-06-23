@@ -17,6 +17,7 @@ import ForgotPassword from "./ForgotPassword";
 import PrivateRoute from "./PrivateRoute";
 import AuthProvider from "./AuthProvider";
 import Profile from "./Profile";
+import Drone from "./Drone";
 
 
 
@@ -63,8 +64,12 @@ const router = createBrowserRouter([
                 element: <PrivateRoute><Orders /></PrivateRoute>,
             },
             {
-                path: "/track",
+                path: "/track-orders/:orderId",
                 element: <PrivateRoute><Track /></PrivateRoute>,
+            },
+            {
+                path: "/drones/:droneId",
+                element: <PrivateRoute><Drone /></PrivateRoute>,
             },
         ],
     },
