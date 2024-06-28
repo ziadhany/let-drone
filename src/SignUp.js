@@ -1,31 +1,55 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
+import logo from "./assets/img/let-drone.webp";
+import axios from "axios";
+import {AuthContext} from "./AuthContext";
+import {useNavigate} from "react-router-dom";
 
 export default function SignUp() {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/register/', {
+                email: email,
+                username: username,
+                password: password,
+            });
+            const accessToken = response.data.access_token;
+            login(accessToken);
+            console.log('Login successful');
+            navigate('/dashboard'); // Redirect to the desired component
+        } catch (error) {
+            console.error('Login failed', error);
+        }
+    };
+
     return (
         <>
             <div className="h-screen w-screen bg-gray-100 pt-10">
                 <div className="max-w-xl mx-auto bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                        <img className="mx-auto h-10 w-auto"
-                             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company"/>
+                        <img className="mx-auto h-20 w-auto"
+                             src={logo} alt="let-drone"/>
                         <h2 className="mt-10 mb-3 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign
                             Up</h2>
                     </div>
-                    <form className="flex-col space-y-4">
+                    <form onSubmit={handleSubmit} className="flex-col space-y-4">
                         <div className="flex flex-col space-y-2">
-                            <label className="block font-medium text-gray-700">First Name</label><input
+                            <label className="block font-medium text-gray-700">Username</label>
+                            <input
+                            onChange={(e) => setUsername(e.target.value)}
                             type="text"
                             className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
-                            name="displayName" required="" placeholder="First Name"/>
+                            name="username" required="" placeholder="First Name"/>
                         </div>
                         <div className="flex flex-col space-y-2">
-                            <label className="block font-medium text-gray-700">Last Name</label><input
-                            type="text"
-                            className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
-                            name="displayName" required="" placeholder="Last Name"/>
-                        </div>
-                        <div className="flex flex-col space-y-2">
-                            <label className="block font-medium text-gray-700">E-Mail Adress</label><input type="email"
+                            <label className="block font-medium text-gray-700">E-Mail Adress</label>
+                            <input type="email" onChange={(e) => setEmail(e.target.value)}
                                                                                                            className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
                                                                                                            name="email"
                                                                                                            required=""
@@ -33,7 +57,9 @@ export default function SignUp() {
                         </div>
                         <div className="flex flex-col space-y-2">
                             <label className="block font-medium text-gray-700">Password <span
-                                className="text-gray-500 font-base text-sm">(Min. 6 Zeichen)</span></label><input
+                                className="text-gray-500 font-base text-sm">(Min. 6 chars)</span></label>
+                            <input
+                            onChange={(e) => setPassword(e.target.value)}
                             type="password"
                             className="shadow-sm block w-full py-2 sm:text-sm rounded-md text-gray-800 disabled:bg-gray-200 sm:text-sm border-gray-300 focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 focus:outline-none  "
                             name="password" minLength="6" placeholder="Password" required=""/>

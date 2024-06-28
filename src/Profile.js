@@ -1,7 +1,37 @@
-import React from 'react';
+import React, {useState} from 'react';
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 
 export default function Profile() {
+    const [first_name, setFirstName] = useState('');
+    const [last_name, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [date_birth, setDateBirth] = useState('');
+    const [address, setAddress] = useState('');
+    const [emergency_contact, setEmergencyContact] = useState('');
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/register/', {
+                first_name: first_name,
+                last_name: last_name,
+                email: email,
+                date_birth: date_birth,
+                address: address,
+                emergency_contact: emergency_contact,
+            });
+            const accessToken = response.data.access_token;
+
+            console.log('profile saved successful');
+            navigate('/dashboard'); // Redirect to the desired component
+        } catch (error) {
+            console.error('fetch profile failed', error);
+        }
+    };
+
     return (
         <>
             <div className="h-screen w-screen bg-gray-100 pt-10">
@@ -9,31 +39,26 @@ export default function Profile() {
                     <div className="flex items-center justify-center p-12">
 
                         <div className="mx-auto w-full max-w-[550px] bg-white">
-                            <form>
+                            <form onSubmit={handleSubmit}>
                                 <div className="mb-5">
-                                    <img className="inline-block h-24 w-24 rounded-full ring-2 ring-white"
-                                         src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                         alt=""/>
+                                    <label htmlFor="name" className="mb-3 block text-base font-medium text-[#07074D]">
+                                        First name
+                                    </label>
+                                    <input type="text" name="name" id="name" placeholder="First Name" onChange={(e) => setFirstName(e.target.value)}
+                                           className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
                                 </div>
                                 <div className="mb-5">
                                     <label htmlFor="name" className="mb-3 block text-base font-medium text-[#07074D]">
-                                    Full Name
+                                        Last name
                                     </label>
-                                    <input type="text" name="name" id="name" placeholder="Full Name"
+                                    <input type="text" name="name" id="name" placeholder="Last Name" onChange={(e) => setLastName(e.target.value)}
                                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
                                 </div>
-                                <div className="mb-5">
-                                    <label htmlFor="phone" className="mb-3 block text-base font-medium text-[#07074D]">
-                                        Phone Number
-                                    </label>
-                                    <input type="text" name="phone" id="phone" placeholder="Enter your phone number"
-                                           className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
-                                </div>
-                                <div className="mb-5">
+                                <div className="mb-5" >
                                     <label htmlFor="email" className="mb-3 block text-base font-medium text-[#07074D]">
                                         Email Address
                                     </label>
-                                    <input type="email" name="email" id="email" placeholder="Enter your email"
+                                    <input type="email" name="email" id="email" placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)}
                                            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
                                 </div>
                                 <div className="-mx-3 flex flex-wrap">
@@ -41,62 +66,32 @@ export default function Profile() {
                                         <div className="mb-5">
                                             <label htmlFor="date"
                                                    className="mb-3 block text-base font-medium text-[#07074D]">
-                                                Date
+                                                Date of birth
                                             </label>
-                                            <input type="date" name="date" id="date"
-                                                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
-                                        </div>
-                                    </div>
-                                    <div className="w-full px-3 sm:w-1/2">
-                                        <div className="mb-5">
-                                            <label htmlFor="time"
-                                                   className="mb-3 block text-base font-medium text-[#07074D]">
-                                                Time
-                                            </label>
-                                            <input type="time" name="time" id="time"
+                                            <input type="date" name="date" id="date" onChange={(e) => setDateBirth(e.target.value)}
                                                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className="mb-5 pt-3">
-                                    <label className="mb-5 block text-base font-semibold text-[#07074D] sm:text-xl">
-                                        Address Details
+                                <div className="mb-5">
+                                    <label htmlFor="name" className="mb-3 block text-base font-medium text-[#07074D]">
+                                        Address
                                     </label>
-                                    <div className="-mx-3 flex flex-wrap">
-                                        <div className="w-full px-3 sm:w-1/2">
-                                            <div className="mb-5">
-                                                <input type="text" name="area" id="area" placeholder="Enter area"
-                                                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
-                                            </div>
-                                        </div>
-                                        <div className="w-full px-3 sm:w-1/2">
-                                            <div className="mb-5">
-                                                <input type="text" name="city" id="city" placeholder="Enter city"
-                                                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
-                                            </div>
-                                        </div>
-                                        <div className="w-full px-3 sm:w-1/2">
-                                            <div className="mb-5">
-                                                <input type="text" name="state" id="state" placeholder="Enter state"
-                                                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
-                                            </div>
-                                        </div>
-                                        <div className="w-full px-3 sm:w-1/2">
-                                            <div className="mb-5">
-                                                <input type="text" name="post-code" id="post-code"
-                                                       placeholder="Post Code"
-                                                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <input type="text" name="name" id="name" placeholder="Address" onChange={(e) => setAddress(e.target.value)}
+                                           className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
                                 </div>
-
+                                <div className="mb-5">
+                                    <label htmlFor="name" className="mb-3 block text-base font-medium text-[#07074D]">
+                                        Emergency contact
+                                    </label>
+                                    <input type="text" name="name" id="name" placeholder="Enter your emergeny contract"  onChange={(e) => setEmergencyContact(e.target.value)}
+                                           className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"/>
+                                </div>
                                 <div>
-                                    <button
-                                        className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                                        Book Appointment
-                                    </button>
+                                    <input
+                                        className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                                        value="Save"
+                                    />
                                 </div>
                             </form>
                         </div>

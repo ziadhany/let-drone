@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import logo from "./assets/img/let-drone.webp";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -18,8 +19,8 @@ const ForgotPassword = () => {
         <>
             <div className="max-w-xl mx-auto bg-white py-8 px-8 mt-12 shadow sm:rounded-lg sm:px-10 justify-center lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img className="mx-auto h-10 w-auto"
-                         src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company"/>
+                    <img className="mx-auto h-20 w-auto"
+                         src={logo} alt="let-drone"/>
                     <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Forget Password</h2>
                 </div>
 

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ethers} from "ethers";
+import Web3 from "web3";
 
 
 const Orders = () => {
@@ -8,6 +9,163 @@ const Orders = () => {
     const [Prescriptions, setPrescriptions] = useState([]);
     const [Delivery, setDelivery] = useState([]);
     const token = localStorage.getItem('access_token');
+
+    // Replace with your contract's ABI and address
+    const contractABI = [
+        {
+            "inputs": [],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "uuid",
+                    "type": "string"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "price",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "status",
+                    "type": "string"
+                }
+            ],
+            "name": "PrescriptionAdded",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "user",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "uuid",
+                    "type": "string"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "price",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "status",
+                    "type": "string"
+                }
+            ],
+            "name": "PrescriptionPaid",
+            "type": "event"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "_uuid",
+                    "type": "string"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_price",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "string",
+                    "name": "_status",
+                    "type": "string"
+                }
+            ],
+            "name": "addPrescription",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "_uuid",
+                    "type": "string"
+                }
+            ],
+            "name": "payForPrescription",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "withdraw",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "admin",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "",
+                    "type": "string"
+                }
+            ],
+            "name": "prescriptions",
+            "outputs": [
+                {
+                    "internalType": "string",
+                    "name": "uuid",
+                    "type": "string"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "price",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "string",
+                    "name": "status",
+                    "type": "string"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "exists",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ];
+
+    const contractAddress = '0xC446C844917D26b9f7F46Fcd702b2C0aEEBefA82';
 
     const connectWalletHandler = async () => {
         if (window.ethereum && window.ethereum.isMetaMask) {
@@ -26,6 +184,32 @@ const Orders = () => {
             setErrorMessage('Please install MetaMask browser extension to interact');
         }
     }
+
+    const payForPrescription = async (uuid, price) => {
+        console.log(uuid, price)
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const web3 = new Web3(window.ethereum);
+                const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+                const accounts = await web3.eth.getAccounts();
+                const amount = web3.utils.toWei(price, 'ether');
+
+                await contract.methods.payForPrescription(uuid).send({
+                    from: accounts[0],
+                    value: amount,
+                });
+
+                alert('Payment successful and prescription status updated!');
+            } catch (error) {
+                console.error('Error paying for prescription:', error);
+                alert('Payment failed.');
+            }
+        } else {
+            alert('MetaMask is not installed!');
+        }
+    };
 
     useEffect(() => {
         const fetchPrescriptions = async () => {
@@ -247,7 +431,7 @@ const Orders = () => {
                                     {prescription.created_at}
                                 </td>
                                 <td className="px-6 py-4">
-                                    <button type="button" disabled={true}
+                                    <button type="button" disabled={prescription.approved ? !prescription.approved:true} onClick={() =>  payForPrescription(prescription.id, prescription.price)}
                                             className="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 me-2 mb-2">
                                         <svg className="w-4 h-4 me-2 -ms-1 text-[#626890]" aria-hidden="true"
                                              focusable="false" data-prefix="fab" data-icon="ethereum" role="img"

@@ -7,7 +7,7 @@ class UploadPrescription extends Component {
         this.state = {
             selectedFile: null,
             uploadStatus: "",
-            deliveryOptions: "PICKUP",
+            delivery_option: "PICKUP",
             location: { latitude: "", longitude: "", altitude: "" },
             error:""
         };
@@ -31,7 +31,7 @@ class UploadPrescription extends Component {
 
         const formData = new FormData();
         formData.append('image', selectedFile);
-        formData.append('delivery_option', this.state.deliveryOptions);
+        formData.append('delivery_option', this.state.delivery_option);
         formData.append('delivery_address', JSON.stringify(this.state.location));
 
         try {
@@ -119,7 +119,7 @@ class UploadPrescription extends Component {
                                 onChange={this.fetchLocation}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value="PICKUP">Pickup</option>
-                            <option value="DRONE">Drone Delivery</option>
+                            <option value="DRONE">Urgent Drone Delivery</option>
                         </select>
                         <h3>{ this.state.error }</h3>
                     </div>
