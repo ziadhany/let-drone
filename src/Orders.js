@@ -419,7 +419,7 @@ const Orders = () => {
                                     {prescription.approved ? "✅" : "⏳"}
                                 </td>
                                 <td className="px-6 py-4">
-                                    $ {prescription.price ? prescription.price : "⏳💰"}
+                                    {prescription.price ? prescription.price : "⏳💰"} ETH
                                 </td>
                                 <td className="px-6 py-4">
                                     {prescription.delivery_option}
