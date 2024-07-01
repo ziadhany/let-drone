@@ -11,15 +11,16 @@ const Orders = () => {
     const token = localStorage.getItem('access_token');
 
     // Replace with your contract's ABI and address
-    const contractABI = [
-        {
-            "inputs": [],
-            "stateMutability": "nonpayable",
-            "type": "constructor"
-        },
+    const contractABI =   [
         {
             "anonymous": false,
             "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "user",
+                    "type": "address"
+                },
                 {
                     "indexed": false,
                     "internalType": "string",
@@ -31,12 +32,6 @@ const Orders = () => {
                     "internalType": "uint256",
                     "name": "price",
                     "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "string",
-                    "name": "status",
-                    "type": "string"
                 }
             ],
             "name": "PrescriptionAdded",
@@ -59,18 +54,12 @@ const Orders = () => {
                 },
                 {
                     "indexed": false,
-                    "internalType": "uint256",
-                    "name": "price",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "string",
+                    "internalType": "enum PrescriptionManager.Status",
                     "name": "status",
-                    "type": "string"
+                    "type": "uint8"
                 }
             ],
-            "name": "PrescriptionPaid",
+            "name": "PrescriptionStatusUpdated",
             "type": "event"
         },
         {
@@ -84,17 +73,44 @@ const Orders = () => {
                     "internalType": "uint256",
                     "name": "_price",
                     "type": "uint256"
-                },
-                {
-                    "internalType": "string",
-                    "name": "_status",
-                    "type": "string"
                 }
             ],
             "name": "addPrescription",
             "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
+            "stateMutability": "payable",
+            "type": "function",
+            "payable": true
+        },
+        {
+            "inputs": [],
+            "name": "getWaitingPrescriptions",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "string",
+                            "name": "uuid",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "price",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "enum PrescriptionManager.Status",
+                            "name": "status",
+                            "type": "uint8"
+                        }
+                    ],
+                    "internalType": "struct PrescriptionManager.Prescription[]",
+                    "name": "",
+                    "type": "tuple[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
         },
         {
             "inputs": [
@@ -104,68 +120,14 @@ const Orders = () => {
                     "type": "string"
                 }
             ],
-            "name": "payForPrescription",
-            "outputs": [],
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "withdraw",
+            "name": "updatePrescriptionStatus",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "admin",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "string",
-                    "name": "",
-                    "type": "string"
-                }
-            ],
-            "name": "prescriptions",
-            "outputs": [
-                {
-                    "internalType": "string",
-                    "name": "uuid",
-                    "type": "string"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "price",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "string",
-                    "name": "status",
-                    "type": "string"
-                },
-                {
-                    "internalType": "bool",
-                    "name": "exists",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
         }
-    ];
+    ]
 
-    const contractAddress = '0xC446C844917D26b9f7F46Fcd702b2C0aEEBefA82';
+    const contractAddress = '0x35FE0bDAcFA048608AbF3C99e7e7427B79cc3af8';
 
     const connectWalletHandler = async () => {
         if (window.ethereum && window.ethereum.isMetaMask) {
@@ -196,7 +158,7 @@ const Orders = () => {
                 const accounts = await web3.eth.getAccounts();
                 const amount = web3.utils.toWei(price, 'ether');
 
-                await contract.methods.payForPrescription(uuid).send({
+                await contract.methods.addPrescription(uuid, amount).send({
                     from: accounts[0],
                     value: amount,
                 });
