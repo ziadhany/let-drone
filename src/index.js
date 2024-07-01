@@ -19,6 +19,7 @@ import AuthProvider from "./AuthProvider";
 import Profile from "./Profile";
 import Drone from "./Drone";
 import AskDoctor from "./AskDoctor";
+import PrescriptionList from "./PrescriptionList";
 
 
 
@@ -57,8 +58,12 @@ const router = createBrowserRouter([
                 element: <PrivateRoute><UploadPrescription /></PrivateRoute>,
             },
             {
-                path: "/edit-prescription",
+                path: "/prescription-edit/:prescriptionId",
                 element: <PrivateRoute><EditPrescription /></PrivateRoute>,
+            },
+            {
+                path: "/prescription-list",
+                element: <PrivateRoute><PrescriptionList /></PrivateRoute>,
             },
             {
                 path: "/ask-doctor",
